@@ -1,0 +1,69 @@
+{
+  "name": "copy-codeblock",
+  "displayName": "Copy Code Block",
+  "description": "Copy selected code or the active file as a fenced markdown code block (with file path) to the clipboard",
+  "version": "0.0.1",
+  "publisher": "hikagami0210",
+  "license": "MIT",
+  "icon": "icon.png",
+  "engines": {
+    "vscode": "^1.78.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "clipboard",
+    "markdown",
+    "code block",
+    "copy"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "copy-codeblock.copySelection",
+        "title": "Copy as Code Block",
+        "category": "Copy Code Block"
+      },
+      {
+        "command": "copy-codeblock.copyFile",
+        "title": "Copy File as Code Block",
+        "category": "Copy Code Block"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "copy-codeblock.copySelection",
+          "when": "editorHasSelection",
+          "group": "9_cutcopypaste@50"
+        }
+      ],
+      "editor/title/context": [
+        {
+          "command": "copy-codeblock.copyFile",
+          "group": "1_cutcopypaste@50"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^18.0.0",
+    "@types/vscode": "^1.78.0",
+    "@vscode/test-cli": "^0.0.15",
+    "@vscode/test-electron": "^3.0.0",
+    "@vscode/vsce": "^3.9.2",
+    "mocha": "^11.7.6",
+    "ovsx": "^1.0.2",
+    "typescript": "^5.4.0"
+  }
+}
