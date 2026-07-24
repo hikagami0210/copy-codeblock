@@ -1,6 +1,6 @@
 {
   "name": "copy-codeblock",
-  "displayName": "Copy Code Block",
+  "displayName": "Copy as Fenced Code Block",
   "description": "Copy selected code or the active file as a fenced markdown code block (with file path) to the clipboard",
   "version": "0.0.1",
   "publisher": "hikagami0210",

@@ -1,4 +1,4 @@
-# Copy Code Block
+# Copy as Fenced Code Block
 
 Copy selected code or an entire file to the clipboard as a fenced Markdown code block, with the file path in the fence header — ready to paste into chat, docs, or issues.
 
