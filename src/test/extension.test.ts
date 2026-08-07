@@ -25,7 +25,7 @@ suite('copy-codeblock extension', () => {
 
     const clipboardText = await vscode.env.clipboard.readText();
     const expected = [
-      '```ts:src/sample.ts',
+      '```ts:src/sample.ts:1-3',
       'export function greet(name: string): string {',
       '  return `Hello, ${name}!`;',
       '}',
@@ -64,7 +64,26 @@ suite('copy-codeblock extension', () => {
     await vscode.commands.executeCommand('copy-codeblock.copySelection');
 
     const clipboardText = await vscode.env.clipboard.readText();
-    const expected = ['```ts:deep/nested/folder/module.ts', 'export const value = 42;', '```'].join('\n');
+    const expected = ['```ts:deep/nested/folder/module.ts:1', 'export const value = 42;', '```'].join('\n');
+
+    assert.strictEqual(clipboardText, expected);
+  });
+
+  test('copySelection omits the exclusive end line when selection ends at column 0', async () => {
+    const document = await vscode.workspace.openTextDocument(fixtureUri);
+    const editor = await vscode.window.showTextDocument(document);
+    // 1–2行目を行選択したときと同じく、終端は3行目先頭
+    editor.selection = new vscode.Selection(new vscode.Position(0, 0), new vscode.Position(2, 0));
+
+    await vscode.commands.executeCommand('copy-codeblock.copySelection');
+
+    const clipboardText = await vscode.env.clipboard.readText();
+    const expected = [
+      '```ts:src/sample.ts:1-2',
+      'export function greet(name: string): string {',
+      '  return `Hello, ${name}!`;',
+      '```',
+    ].join('\n');
 
     assert.strictEqual(clipboardText, expected);
   });

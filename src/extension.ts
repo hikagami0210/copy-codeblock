@@ -19,10 +19,36 @@ function toMarkdownLang(languageId: string): string {
   return LANGUAGE_ID_TO_MARKDOWN_LANG[languageId] ?? languageId;
 }
 
-function buildCodeBlock(lang: string, filePath: string, code: string): string {
+function getSelectionLineRange(selection: vscode.Selection): { start: number; end: number } {
+  const start = selection.start.line + 1;
+  // 行末まで選択すると end が次の行の先頭 (character === 0) になるため、その行は含めない
+  const end =
+    selection.end.character === 0 && selection.end.line > selection.start.line
+      ? selection.end.line
+      : selection.end.line + 1;
+  return { start, end };
+}
+
+function formatLocation(filePath: string, lineRange?: { start: number; end: number }): string {
+  if (!lineRange) {
+    return filePath;
+  }
+  if (lineRange.start === lineRange.end) {
+    return `${filePath}:${lineRange.start}`;
+  }
+  return `${filePath}:${lineRange.start}-${lineRange.end}`;
+}
+
+function buildCodeBlock(
+  lang: string,
+  filePath: string,
+  code: string,
+  lineRange?: { start: number; end: number },
+): string {
   const fence = '```';
   const trimmedCode = code.replace(/\n$/, '');
-  return `${fence}${lang}:${filePath}\n${trimmedCode}\n${fence}`;
+  const location = formatLocation(filePath, lineRange);
+  return `${fence}${lang}:${location}\n${trimmedCode}\n${fence}`;
 }
 
 async function copySelection(): Promise<void> {
@@ -39,7 +65,8 @@ async function copySelection(): Promise<void> {
 
   const lang = toMarkdownLang(document.languageId);
   const filePath = vscode.workspace.asRelativePath(document.uri, false);
-  const block = buildCodeBlock(lang, filePath, code);
+  const lineRange = getSelectionLineRange(selection);
+  const block = buildCodeBlock(lang, filePath, code, lineRange);
 
   await vscode.env.clipboard.writeText(block);
   vscode.window.showInformationMessage('Copied selection as code block');
